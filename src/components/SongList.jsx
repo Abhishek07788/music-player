@@ -28,7 +28,8 @@ const SongList = ({ songs, handleSetCurrentSong, currentSong }) => {
         component={"img"}
         display={{ xs: "none", sm: "block", md: "block" }}
         height={300}
-        width={"100%"}
+        width={"90%"}
+        margin={"auto"}
         src={assetsPATHS.artist}
         alt={"artist"}
         pb={10}
