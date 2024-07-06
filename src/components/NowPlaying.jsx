@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, useEffect, useMemo, useState } from "react";
+import React, { forwardRef, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -44,12 +44,14 @@ const NowPlaying = forwardRef((props, ref) => {
       audio.addEventListener("timeupdate", handleTimeUpdate);
       audio.addEventListener("loadedmetadata", handleMetadata);
       audio.addEventListener("loadeddata", handleLoadedData);
+      audio.addEventListener("loadstart", handleLoadStart);
     }
     return () => {
       if (audio) {
         audio.removeEventListener("timeupdate", handleTimeUpdate);
         audio.removeEventListener("loadedmetadata", handleMetadata);
         audio.removeEventListener("loadeddata", handleLoadedData);
+        audio.removeEventListener("loadstart", handleLoadStart);
       }
     };
   }, []);
@@ -68,6 +70,10 @@ const NowPlaying = forwardRef((props, ref) => {
 
   const handleLoadedData = () => {
     setLoading(false);
+  };
+
+  const handleLoadStart = () => {
+    setLoading(true);
   };
 
   const handleSeek = (_, value) => {
@@ -171,4 +177,4 @@ const NowPlaying = forwardRef((props, ref) => {
   );
 });
 
-export default memo(NowPlaying);
+export default NowPlaying;
