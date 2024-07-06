@@ -169,7 +169,7 @@ const NowPlaying = forwardRef((props, ref) => {
             <PauseIcon sx={{ color: "#fff", fontSize: "30px" }} />
           ) : !isPlaying && !loading ? (
             <PlayArrowIcon sx={{ color: "#fff", fontSize: "30px" }} />
-          ) : !isPlaying && loading ? (
+          ) : loading ? (
             <CircularProgress
               style={{ width: "16px", height: "16px", color: "#fff" }}
             />
