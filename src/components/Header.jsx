@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import {
   Grid,
   Toolbar,
@@ -49,4 +49,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default memo(Header);

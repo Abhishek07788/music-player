@@ -1,7 +1,7 @@
 import { songPath } from "../assets/songPath";
 export const SongsData = [
   {
-    id: 1,
+    id: "1",
     title: "Let me love you",
     artist: "Justin Beaver",
     playing: "1,040,811,084",
@@ -11,7 +11,7 @@ export const SongsData = [
     song: songPath.letMeLoveYou,
   },
   {
-    id: 2,
+    id: "2",
     title: "Deva Deva",
     artist: "Emma Heesters",
     playing: "643,786,045",
@@ -21,7 +21,7 @@ export const SongsData = [
     song: songPath.deva_deva,
   },
   {
-    id: 3,
+    id: "3",
     title: "Yesterday",
     artist: "Ali Gatie, Alan Walker",
     playing: "407,234,004",
@@ -31,7 +31,7 @@ export const SongsData = [
     song: songPath.Yesterday,
   },
   {
-    id: 4,
+    id: "4",
     title: "On My Way",
     artist: "Alan Walker, Sabrina Carpenter, Farruko",
     playing: "316,391,952",
@@ -41,7 +41,7 @@ export const SongsData = [
     song: songPath.OnMyWay,
   },
   {
-    id: 5,
+    id: "5",
     title: "Don't You Hold Me Down",
     artist: "Alan Walker, Georgia Ku",
     playing: "268,187,218",
@@ -51,7 +51,7 @@ export const SongsData = [
     song: songPath.DontYouHoldMe,
   },
   {
-    id: 6,
+    id: "6",
     title: "Let Me Down Slowly",
     artist: "Alec Benjamin",
     playing: "316,391,952",
@@ -62,7 +62,7 @@ export const SongsData = [
     song: songPath.LetMeDownSlowly,
   },
   {
-    id: 7,
+    id: "7",
     title: "Lala Li Lala",
     artist: "Aca Xoca",
     playing: "316,352",
@@ -72,7 +72,7 @@ export const SongsData = [
     song: songPath.LalaLiLala,
   },
   {
-    id: 8,
+    id: "8",
     title: "Uhh na na na na",
     artist: "Dharia",
     playing: "268,187,218",
@@ -82,7 +82,7 @@ export const SongsData = [
     song: songPath.UhhNaiNa,
   },
   {
-    id: 9,
+    id: "9",
     title: "Tus Besos",
     artist: "Freebot",
     playing: "678,352,342",
@@ -92,7 +92,7 @@ export const SongsData = [
     song: songPath.TusBesos,
   },
   {
-    id: 10,
+    id: "10",
     title: "Light The Sky",
     artist: "Rahma Riad, Manal",
     playing: "767,445,321",

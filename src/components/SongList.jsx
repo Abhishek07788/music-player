@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import {
   Box,
   Typography,
@@ -12,81 +12,21 @@ import {
   Stack,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import { useDrag, useDrop } from "react-dnd";
 import { assetsPATHS } from "../assets/paths";
+import { Draggable, Droppable } from "react-beautiful-dnd";
+import SongTableBody from "./SongTableBody";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   borderBottom: "none",
   color: "#fff",
-  cursor: "pointer",
 }));
 
-const ItemTypes = {
-  SONG: "song",
-};
-
-const DraggableRow = ({ song, index, moveSong, onClick, currentSong }) => {
-  const [, ref] = useDrag({
-    type: ItemTypes.SONG,
-    item: { index },
-  });
-
-  const [, drop] = useDrop({
-    accept: ItemTypes.SONG,
-    hover: (draggedItem) => {
-      if (draggedItem.index !== index) {
-        moveSong(draggedItem.index, index);
-        draggedItem.index = index;
-      }
-    },
-  });
-
-  return (
-    <TableRow
-      onClick={() => onClick(song, index)}
-      ref={(node) => ref(drop(node))}
-      key={song.id}
-      sx={
-        currentSong.id === song.id
-          ? {
-              bgcolor: "#520000",
-              borderLeft: "4px solid red",
-              cursor: "move",
-            }
-          : { cursor: "move" }
-      }
-    >
-      <StyledTableCell>{index + 1}</StyledTableCell>
-      <StyledTableCell>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Box
-            component={"img"}
-            src={song.cover}
-            alt={song.title}
-            sx={{ width: 50, height: 30, marginRight: "10px" }}
-          />
-          <Typography variant="body1" sx={{ color: "#fff" }}>
-            {song.title}
-          </Typography>
-        </Box>
-      </StyledTableCell>
-      <StyledTableCell>{song.playing}</StyledTableCell>
-      <StyledTableCell>{song.time}</StyledTableCell>
-      <StyledTableCell sx={{ textAlign: "right" }}>
-        <Typography variant="subtitle2" noWrap width={100}>
-          {song.album}
-        </Typography>
-      </StyledTableCell>
-    </TableRow>
-  );
-};
-
-const SongList = ({ songs, moveSong, handleSetCurrentSong, currentSong }) => {
+const SongList = ({ songs, handleSetCurrentSong, currentSong }) => {
   return (
     <>
       <Box
         component={"img"}
-        display={{ xs: "none", md: "block" }}
+        display={{ xs: "none", sm: "block", md: "block" }}
         height={300}
         width={"100%"}
         src={assetsPATHS.artist}
@@ -95,6 +35,7 @@ const SongList = ({ songs, moveSong, handleSetCurrentSong, currentSong }) => {
       />
       <Stack
         px={2}
+        pt={2}
         direction={"row"}
         justifyContent={"space-between"}
         alignItems={"center"}
@@ -117,22 +58,33 @@ const SongList = ({ songs, moveSong, handleSetCurrentSong, currentSong }) => {
               </StyledTableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {songs.map((song, index) => (
-              <DraggableRow
-                onClick={handleSetCurrentSong}
-                currentSong={currentSong}
-                key={song.id}
-                song={song}
-                index={index}
-                moveSong={moveSong}
-              />
-            ))}
-          </TableBody>
+          <Droppable droppableId="droppable-1">
+            {(provided) => (
+              <TableBody {...provided.droppableProps} ref={provided.innerRef}>
+                {songs.map((song, index) => (
+                  <Draggable key={song.id} draggableId={song.id} index={index}>
+                    {(provided) => (
+                      <SongTableBody
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        handleSetCurrentSong={handleSetCurrentSong}
+                        currentSong={currentSong}
+                        song={song}
+                        index={index}
+                        style={{ ...provided.draggableProps.style }}
+                      />
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </TableBody>
+            )}
+          </Droppable>
         </Table>
       </TableContainer>
     </>
   );
 };
 
-export default SongList;
+export default memo(SongList);

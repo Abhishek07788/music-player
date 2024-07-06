@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from "react";
+import React, { forwardRef, memo, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -13,26 +13,61 @@ import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import LoopIcon from "@mui/icons-material/Loop";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
 
+const formatTime = (time) => {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60)
+    .toString()
+    .padStart(2, "0");
+  return `${minutes}:${seconds}`;
+};
+
 const NowPlaying = forwardRef((props, ref) => {
   const {
     currentSong,
     songs,
     isPlaying,
-    currentTime,
-    duration,
     onPlayPause,
     onNext,
     onPrevious,
     onSeek,
-    loading,
   } = props;
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const currentIndex = useMemo(() => {
+    return songs.findIndex((el) => el.id === currentSong.song.id);
+  }, [currentSong, songs]);
 
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60)
-      .toString()
-      .padStart(2, "0");
-    return `${minutes}:${seconds}`;
+  useEffect(() => {
+    const audio = ref.current;
+    if (audio) {
+      audio.addEventListener("timeupdate", handleTimeUpdate);
+      audio.addEventListener("loadedmetadata", handleMetadata);
+      audio.addEventListener("loadeddata", handleLoadedData);
+    }
+    return () => {
+      if (audio) {
+        audio.removeEventListener("timeupdate", handleTimeUpdate);
+        audio.removeEventListener("loadedmetadata", handleMetadata);
+        audio.removeEventListener("loadeddata", handleLoadedData);
+      }
+    };
+  }, []);
+
+  const handleMetadata = () => {
+    if (ref.current) {
+      setDuration(ref.current.duration);
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (ref.current) {
+      setCurrentTime(ref.current.currentTime);
+    }
+  };
+
+  const handleLoadedData = () => {
+    setLoading(false);
   };
 
   const handleSeek = (_, value) => {
@@ -40,10 +75,11 @@ const NowPlaying = forwardRef((props, ref) => {
   };
 
   const handleNextSong = () => {
-    onNext(songs.length - 1 === currentSong.index ? 0 : currentSong.index + 1);
+    onNext(songs.length - 1 === currentIndex ? 0 : currentIndex + 1);
   };
+
   useEffect(() => {
-    if (currentTime === duration) {
+    if (currentTime === duration && duration !== 0) {
       handleNextSong();
     }
   }, [currentTime, duration]);
@@ -67,7 +103,7 @@ const NowPlaying = forwardRef((props, ref) => {
         alt={currentSong.song.title}
         sx={{
           width: "100%",
-          height: { xs: 300, md: 120 },
+          height: { xs: 300, sm: 400, md: 120 },
           borderRadius: "10px",
           marginY: "10px",
         }}
@@ -105,8 +141,8 @@ const NowPlaying = forwardRef((props, ref) => {
           <LoopIcon sx={{ color: "#fff" }} />
         </IconButton>
         <IconButton
-          disabled={currentSong.index === 0}
-          onClick={() => onPrevious(currentSong.index - 1)}
+          disabled={currentIndex === 0}
+          onClick={() => onPrevious(currentIndex - 1)}
         >
           <SkipPreviousIcon sx={{ color: "#fff" }} />
         </IconButton>
@@ -135,4 +171,4 @@ const NowPlaying = forwardRef((props, ref) => {
   );
 });
 
-export default NowPlaying;
+export default memo(NowPlaying);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import {
   List,
   ListItem,
@@ -33,8 +33,7 @@ const Sidebar = () => {
   return (
     <Box
       sx={{
-        width: "300px",
-        bgcolor: "#0e0e0e",
+        width: { md: "20%", xs: "20%" },
         color: "#fff",
         padding: "20px",
         display: { xs: "none", md: "block" },
@@ -67,4 +66,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default memo(Sidebar);

@@ -6,6 +6,8 @@ import NowPlaying from "./components/NowPlaying";
 import { Box, Grid } from "@mui/material";
 import { SongsData } from "./data/Songs";
 import { styled } from "@mui/system";
+import { DragDropContext } from "react-beautiful-dnd";
+import "./App.css";
 
 const listBgcolor =
   "linear-gradient(180deg, rgba(75,0,1,1) 0%, rgba(17,9,9,1) 79%)";
@@ -14,6 +16,12 @@ const musicBgColor =
 
 const GridWithHiddenScrollbar = styled(Grid)(({ theme }) => ({
   overflow: "auto",
+  background: listBgcolor,
+  color: "#fff",
+  height: "100vh",
+  overflow: "auto",
+  px: "15px",
+  pb: 20,
   "&::-webkit-scrollbar": {
     display: "none",
   },
@@ -23,71 +31,26 @@ const GridWithHiddenScrollbar = styled(Grid)(({ theme }) => ({
 
 const App = () => {
   const [songs, setSongs] = useState(SongsData);
-  const [currentSong, setCurrentSong] = useState({ song: songs[0], index: -1 });
+  const [currentSong, setCurrentSong] = useState({
+    song: songs[0],
+    index: 0,
+  });
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [userInteracted, setUserInteracted] = useState(false);
-  const [loading, setLoading] = useState(false);
   const audioRef = useRef(null);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.addEventListener("timeupdate", handleTimeUpdate);
-      audio.addEventListener("loadedmetadata", handleMetadata);
-      audio.addEventListener("loadeddata", handleLoadedData);
-    }
-    return () => {
-      if (audio) {
-        audio.removeEventListener("timeupdate", handleTimeUpdate);
-        audio.removeEventListener("loadedmetadata", handleMetadata);
-        audio.removeEventListener("loadeddata", handleLoadedData);
-      }
-    };
-  }, []);
-
-  const handleMetadata = () => {
-    if (audioRef.current) {
-      setDuration(audioRef.current.duration);
-    }
-  };
-
-  const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime);
-    }
-  };
-
-  const handleLoadedData = () => {
-    setLoading(false);
-  };
 
   const handleSeek = useCallback((value) => {
     if (audioRef.current) {
       audioRef.current.currentTime = value;
-      setCurrentTime(value);
     }
   }, []);
 
-  const moveSong = useCallback(
-    (from, to) => {
-      const updatedSongs = [...songs];
-      const [movedSong] = updatedSongs.splice(from, 1);
-      updatedSongs.splice(to, 0, movedSong);
-      setSongs(updatedSongs);
-    },
-    [songs]
-  );
-
   const handleSetCurrentSong = useCallback((song, index) => {
-    setLoading(true);
     setCurrentSong({ song, index });
   }, []);
 
   const onPrevious = useCallback(
     (index) => {
-      setLoading(true);
       setCurrentSong({ song: songs[index], index });
     },
     [songs]
@@ -95,7 +58,6 @@ const App = () => {
 
   const onNext = useCallback(
     (index) => {
-      setLoading(true);
       setCurrentSong({ song: songs[index], index });
     },
     [songs]
@@ -134,39 +96,46 @@ const App = () => {
     }
   }, [isPlaying]);
 
+  const handleOnDragEnd = useCallback(
+    (result) => {
+      if (!result.destination) return;
+      const updatedSongs = Array.from(songs);
+      const [movedSong] = updatedSongs.splice(result.source.index, 1);
+      updatedSongs.splice(result.destination.index, 0, movedSong);
+      setSongs(updatedSongs);
+    },
+    [songs]
+  );
+
   return (
-    <Box sx={{ display: "flex" }} onClick={handleUserInteraction}>
-      <Sidebar />
-      <Grid container flexDirection={{ xs: "column-reverse", md: "row" }}>
-        <GridWithHiddenScrollbar
-          item
-          md={9}
-          sx={{
-            background: listBgcolor,
-            color: "#fff",
-            height: "100vh",
-            overflow: "auto",
-            px: "15px",
-          }}
-        >
+    <DragDropContext onDragEnd={handleOnDragEnd}>
+      <Grid
+        onClick={handleUserInteraction}
+        container
+        flexDirection={{ xs: "column-reverse", sm: "row", md: "row" }}
+      >
+        <Grid item md={2.5} sm={0} sx={{ background: "#0e0e0e" }}>
+          <Sidebar />
+        </Grid>
+        <GridWithHiddenScrollbar item md={7} sm={7}>
           <Box display={{ xs: "none", md: "block" }}>
             <Header />
           </Box>
           <SongList
             currentSong={currentSong.song}
             songs={songs}
-            moveSong={moveSong}
             handleSetCurrentSong={handleSetCurrentSong}
           />
         </GridWithHiddenScrollbar>
         <Grid
           item
-          md={3}
-          display={"flex"}
-          alignItems={"flex-end"}
+          md={2.5}
+          sm={5}
           sx={{
             background: musicBgColor,
             color: "#fff",
+            display: "flex",
+            alignItems: { xs: "center", sm: "center", md: "flex-end" },
           }}
         >
           <NowPlaying
@@ -174,9 +143,6 @@ const App = () => {
             currentSong={currentSong}
             songs={songs}
             isPlaying={isPlaying}
-            loading={loading}
-            currentTime={currentTime}
-            duration={duration}
             onPlayPause={handlePlayPause}
             onNext={onNext}
             onPrevious={onPrevious}
@@ -184,7 +150,7 @@ const App = () => {
           />
         </Grid>
       </Grid>
-    </Box>
+    </DragDropContext>
   );
 };
 
