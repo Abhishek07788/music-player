@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useMemo, useState } from "react";
+import React, { forwardRef, memo, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -40,19 +40,23 @@ const NowPlaying = forwardRef((props, ref) => {
 
   useEffect(() => {
     const audio = ref.current;
-    if (audio) {
-      audio.addEventListener("timeupdate", handleTimeUpdate);
-      audio.addEventListener("loadedmetadata", handleMetadata);
-      audio.addEventListener("loadeddata", handleLoadedData);
-      audio.addEventListener("loadstart", handleLoadStart);
-    }
+    const eventListeners = [
+      { type: "timeupdate", handler: handleTimeUpdate },
+      { type: "loadedmetadata", handler: handleMetadata },
+      { type: "loadeddata", handler: handleLoadedData },
+      { type: "loadstart", handler: handleLoadStart },
+      { type: "waiting", handler: handleWaiting },
+      { type: "playing", handler: handlePlaying },
+    ];
+
+    eventListeners.forEach(({ type, handler }) => {
+      audio.addEventListener(type, handler);
+    });
+
     return () => {
-      if (audio) {
-        audio.removeEventListener("timeupdate", handleTimeUpdate);
-        audio.removeEventListener("loadedmetadata", handleMetadata);
-        audio.removeEventListener("loadeddata", handleLoadedData);
-        audio.removeEventListener("loadstart", handleLoadStart);
-      }
+      eventListeners.forEach(({ type, handler }) => {
+        audio.removeEventListener(type, handler);
+      });
     };
   }, []);
 
@@ -74,6 +78,14 @@ const NowPlaying = forwardRef((props, ref) => {
 
   const handleLoadStart = () => {
     setLoading(true);
+  };
+
+  const handleWaiting = () => {
+    setLoading(true);
+  };
+
+  const handlePlaying = () => {
+    setLoading(false);
   };
 
   const handleSeek = (_, value) => {
@@ -177,4 +189,4 @@ const NowPlaying = forwardRef((props, ref) => {
   );
 });
 
-export default NowPlaying;
+export default memo(NowPlaying);
