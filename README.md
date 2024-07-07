@@ -1,1 +1,1 @@
-![image](https://github.com/Abhishek07788/music-player/assets/104199818/25fa1981-ce14-4e30-b66b-6f4835949b63)
+<img width="1440" alt="image" src="https://github.com/Abhishek07788/music-player/assets/104199818/44bc7fb7-6616-4636-9642-8a9bac575d5b">
