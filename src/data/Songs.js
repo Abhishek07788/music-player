@@ -12,16 +12,6 @@ export const SongsData = [
   },
   {
     id: "2",
-    title: "Deva Deva",
-    artist: "Emma Heesters",
-    playing: "643,786,045",
-    time: "3:50",
-    album: "DEVA DEVA - (English Version) Mp3 Download Emma Heesters",
-    cover: "https://www.pagalworld.com.sb/siteuploads/thumb/sft129/64387_4.jpg",
-    song: songPath.deva_deva,
-  },
-  {
-    id: "3",
     title: "Yesterday",
     artist: "Ali Gatie, Alan Walker",
     playing: "407,234,004",
@@ -31,7 +21,7 @@ export const SongsData = [
     song: songPath.Yesterday,
   },
   {
-    id: "4",
+    id: "3",
     title: "On My Way",
     artist: "Alan Walker, Sabrina Carpenter, Farruko",
     playing: "316,391,952",
@@ -39,6 +29,16 @@ export const SongsData = [
     album: "On My Way Mp3 Download Alan Walker, Sabrina Carpenter, Farruko",
     cover: "https://www.pagalworld.com.sb/siteuploads/thumb/sft136/67774_4.jpg",
     song: songPath.OnMyWay,
+  },
+  {
+    id: "4",
+    title: "Deva Deva",
+    artist: "Emma Heesters",
+    playing: "643,786,045",
+    time: "3:50",
+    album: "DEVA DEVA - (English Version) Mp3 Download Emma Heesters",
+    cover: "https://www.pagalworld.com.sb/siteuploads/thumb/sft129/64387_4.jpg",
+    song: songPath.deva_deva,
   },
   {
     id: "5",

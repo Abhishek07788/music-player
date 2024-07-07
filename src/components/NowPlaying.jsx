@@ -146,7 +146,7 @@ const NowPlaying = forwardRef((props, ref) => {
           onChange={handleSeek}
           sx={{ color: "#fff", marginX: "25px", flexGrow: 1 }}
         />
-        <Typography variant="caption">{formatTime(duration)}</Typography>
+        <Typography variant="caption">{currentSong.song.time}</Typography>
       </Box>
       <Box
         sx={{
